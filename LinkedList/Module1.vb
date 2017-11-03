@@ -31,13 +31,11 @@
                 start = nextFree
             Else
                 Dim index As Integer = start
-                Dim prevIndex As Integer = start
-                Do While input > list(index).entry And list(prevIndex).pointer <> 0
-                    prevIndex = index
+                Do While input > list(list(index).pointer).entry And list(index).pointer <> 0
                     index = list(index).pointer
                 Loop
-                list(nextFree).pointer = index
-                list(prevIndex).pointer = nextFree
+                list(nextFree).pointer = list(index).pointer
+                list(index).pointer = nextFree
             End If
         End If
         nextFree += 1
