@@ -1,9 +1,18 @@
 ﻿Module Module1
 
     Public Class LinkedList
+
+        Private head As node
+        Private tail As node
+
         Private Class node
             Private entry As String
-            Private pointer As node
+            Private nextNode As node
+
+            Sub New(ByVal input As String, ByVal pointer As node)
+                entry = input
+                nextNode = pointer
+            End Sub
 
             Public Sub setEntry(ByVal value As String)
                 entry = value
@@ -12,48 +21,73 @@
                 Return entry
             End Function
 
-            Public Sub setPointer(ByVal nextNode As node)
-                pointer = nextNode
+            Public Sub setNext(ByVal nextNode As node)
+                Me.nextNode = nextNode
             End Sub
-            Public Function getPointer()
-                Return pointer
+            Public Function getNext()
+                Return nextNode
             End Function
         End Class
-        Dim head As node
-        Dim tail As node
 
         Sub New()
-            head = New node
-            head.setEntry(vbNullString)
-            head.setPointer(Nothing)
+            head = New node(vbNullString, Nothing)
             tail = Nothing
         End Sub
-
-        Sub New(ByVal entry As String)
-            head = New node
-            head.setEntry(entry)
-            head.setPointer(Nothing)
+        Sub New(ByVal input As String)
+            head = New node(input, Nothing)
             tail = head
         End Sub
 
-        Sub addNew(ByVal entry As String)
-            If IsNothing(tail) Then
-                head.setEntry(entry)
-                head.setPointer(Nothing)
+        Sub addNew(ByVal input As String)
+            If head.getEntry = vbNullString Then
+                head.setEntry(input)
+                head.setNext(Nothing)
                 tail = head
             Else
-                tail.setPointer(New node)
-                tail = tail.getPointer
-                tail.setEntry(entry)
-                tail.setPointer(Nothing)
+                tail.setNext(New node(input, Nothing))
+                tail = tail.getNext
             End If
         End Sub
+
+        Sub insert(ByVal input As String)
+            If head.getEntry = vbNullString Then
+                addNew(input)
+            Else
+                If input < head.getEntry Then
+                    head = New node(input, head)
+                ElseIf input > tail.getEntry Then
+                    addNew(input)
+                Else
+                    Dim current = head
+                    Do While input > current.getNext.getNext.getEntry
+                        current = current.getNext
+                    Loop
+                    current.getNext.setNext(New node(input, current.getNext.getNext))
+                End If
+            End If
+        End Sub
+
+        Function getNode(ByVal index As Integer)
+            Dim out = head
+            For i = 0 To index
+                If i <> 0 Then
+                    out = out.getNext
+                End If
+            Next
+            Return out
+        End Function
+        Function getHead()
+            Return head
+        End Function
+        Function getTail()
+            Return tail
+        End Function
 
         Sub print()
             Dim mNext As node = head
             Do While IsNothing(mNext) = False
                 Console.Write(mNext.getEntry & " ")
-                mNext = mNext.getPointer
+                mNext = mNext.getNext
             Loop
         End Sub
 
@@ -61,47 +95,17 @@
 
 
     Sub Main()
-        Dim names = New LinkedList("A")
-        names.addNew("B")
-        names.addNew("C")
+        Dim names = New LinkedList
+        names.insert("B")
+        names.insert("A")
+        names.addNew("F")
+        names.insert("D")
+        names.insert("Z")
+        names.insert("Y")
+        Console.Write(names.getNode(0).getEntry)
         names.print()
         Console.ReadLine()
     End Sub
-
-    'Sub insert(ByRef list() As LinkedList, ByVal input As String)
-    '    list(nextFree).entry = input
-    '    If nextFree = 1 Then
-    '        list(nextFree).pointer = 0
-    '        start = 1
-    '    Else
-    '        If input < list(start).entry Then
-    '            list(nextFree).pointer = start
-    '            start = nextFree
-    '        Else
-    '            Dim index As Integer = start
-    '            Dim prevIndex As Integer = start
-    '            Do While input > list(index).entry And list(prevIndex).pointer <> 0
-    '                prevIndex = index
-    '                index = list(index).pointer
-    '            Loop
-    '            list(nextFree).pointer = index
-    '            list(prevIndex).pointer = nextFree
-    '        End If
-    '    End If
-    '    nextFree += 1
-    'End Sub
-
-    'Sub printList(ByVal list() As LinkedList)
-    '    Dim prev As Integer = start
-    '    Dim arr(nextFree - 1) As String
-    '    For i = 1 To arr.Length - 1
-    '        arr(i) = list(prev).entry
-    '        prev = list(prev).pointer
-    '    Next
-    '    For i = 1 To arr.Length - 1
-    '        Console.Write(arr(i) & " ")
-    '    Next
-    'End Sub
 
 
 End Module
