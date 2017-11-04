@@ -4,6 +4,7 @@
 
         Private head As node
         Private tail As node
+        Private length As Integer
 
         Private Class node
             Private entry As String
@@ -47,6 +48,7 @@
                 tail.setNext(New node(input, Nothing))
                 tail = tail.getNext
             End If
+            length += 1
         End Sub
 
         Sub insert(ByVal input As String)
@@ -59,12 +61,32 @@
                     addNew(input)
                 Else
                     Dim current = head
-                    Do While input > current.getNext.getNext.getEntry
+                    Do While input > current.getNext.getEntry
                         current = current.getNext
                     Loop
-                    current.getNext.setNext(New node(input, current.getNext.getNext))
+                    current.setNext(New node(input, current.getNext))
                 End If
             End If
+            length += 1
+        End Sub
+
+        Sub insert(ByVal input As String, ByVal index As Integer)
+            If index <= length - 1 Then
+                If index = 0 Then
+                    head = New node(input, head)
+                ElseIf index = 1 Then
+                    head.setNext(New node(input, head.getNext))
+                Else
+                    Dim current = head
+                    Dim counter = 1
+                    Do While counter < index
+                        current = current.getNext
+                        counter += 1
+                    Loop
+                    current.setNext(New node(input, current.getNext))
+                End If
+            End If
+            length += 1
         End Sub
 
         Function getNode(ByVal index As Integer)
@@ -102,6 +124,7 @@
         names.insert("D")
         names.insert("Z")
         names.insert("Y")
+        names.insert("J", 4)
         Console.Write(names.getNode(0).getEntry)
         names.print()
         Console.ReadLine()
