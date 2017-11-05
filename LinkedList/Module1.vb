@@ -7,27 +7,13 @@
         Private length As Integer
 
         Private Class node
-            Private entry As String
-            Private nextNode As node
+            Public entry As String
+            Public nextNode As node
 
             Sub New(ByVal input As String, ByVal pointer As node)
                 entry = input
                 nextNode = pointer
             End Sub
-
-            Public Sub setEntry(ByVal value As String)
-                entry = value
-            End Sub
-            Public Function getEntry()
-                Return entry
-            End Function
-
-            Public Sub setNext(ByVal nextNode As node)
-                Me.nextNode = nextNode
-            End Sub
-            Public Function getNext()
-                Return nextNode
-            End Function
         End Class
 
         Sub New()
@@ -40,31 +26,31 @@
         End Sub
 
         Sub addNew(ByVal input As String)
-            If head.getEntry = vbNullString Then
-                head.setEntry(input)
-                head.setNext(Nothing)
+            If head.entry = vbNullString Then
+                head.entry = input
+                head.nextNode = Nothing
                 tail = head
             Else
-                tail.setNext(New node(input, Nothing))
-                tail = tail.getNext
+                tail.nextNode = New node(input, Nothing)
+                tail = tail.nextNode
             End If
             length += 1
         End Sub
 
         Sub insert(ByVal input As String)
-            If head.getEntry = vbNullString Then
+            If head.entry = vbNullString Then
                 addNew(input)
             Else
-                If input < head.getEntry Then
+                If input < head.entry Then
                     head = New node(input, head)
-                ElseIf input > tail.getEntry Then
+                ElseIf input > tail.entry Then
                     addNew(input)
                 Else
                     Dim current = head
-                    Do While input > current.getNext.getEntry
-                        current = current.getNext
+                    Do While input > current.nextNode.entry
+                        current = current.nextNode
                     Loop
-                    current.setNext(New node(input, current.getNext))
+                    current.nextNode = New node(input, current.nextNode)
                 End If
             End If
             length += 1
@@ -75,15 +61,15 @@
                 If index = 0 Then
                     head = New node(input, head)
                 ElseIf index = 1 Then
-                    head.setNext(New node(input, head.getNext))
+                    head.nextNode = New node(input, head.nextNode)
                 Else
                     Dim current = head
                     Dim counter = 1
                     Do While counter < index
-                        current = current.getNext
+                        current = current.nextNode
                         counter += 1
                     Loop
-                    current.setNext(New node(input, current.getNext))
+                    current.nextNode = New node(input, current.nextNode)
                 End If
             End If
             length += 1
@@ -93,11 +79,41 @@
             Dim out = head
             For i = 0 To index
                 If i <> 0 Then
-                    out = out.getNext
+                    out = out.nextNode
                 End If
             Next
             Return out
         End Function
+
+        Function remNode(ByVal index As Integer)
+            Dim out = head
+            For i = 0 To index - 1
+                If i <> 0 Then
+                    out = out.nextNode
+                End If
+            Next
+            out.nextNode = out.nextNode.nextNode
+            Return out.nextNode
+        End Function
+
+        Sub remNode(ByVal ent As String)
+            If ent = head.entry Then
+                head = head.nextNode
+            Else
+                Dim counter As Integer = 1
+                Dim out = head
+                Do Until ent = out.nextNode.entry Or IsNothing(out)
+                    out = out.nextNode
+                Loop
+                If IsNothing(out) Then
+                    Return
+                Else
+                    out.nextNode = out.nextNode.nextNode
+                End If
+            End If
+
+        End Sub
+
         Function getHead()
             Return head
         End Function
@@ -108,8 +124,8 @@
         Sub print()
             Dim mNext As node = head
             Do While IsNothing(mNext) = False
-                Console.Write(mNext.getEntry & " ")
-                mNext = mNext.getNext
+                Console.Write(mNext.entry & " ")
+                mNext = mNext.nextNode
             Loop
         End Sub
 
@@ -125,7 +141,10 @@
         names.insert("Z")
         names.insert("Y")
         names.insert("J", 4)
-        Console.Write(names.getNode(0).getEntry)
+        Console.Write(names.getNode(0).entry)
+        names.print()
+        Console.WriteLine()
+        names.remNode("Z")
         names.print()
         Console.ReadLine()
     End Sub
