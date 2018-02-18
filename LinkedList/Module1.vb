@@ -1,15 +1,15 @@
 ﻿Module Module1
 
-    Structure LinkedList
-        Dim entry As String
+    Structure Node
+        Dim data As String
         Dim pointer As Integer
     End Structure
 
     Dim nextFree As Integer = 1
-    Dim start As Integer
+    Dim head As Integer
 
     Sub Main()
-        Dim names(10) As LinkedList
+        Dim names(10) As Node
         insert(names, "H")
         insert(names, "A")
         insert(names, "G")
@@ -20,18 +20,18 @@
         Console.ReadLine()
     End Sub
 
-    Sub insert(ByRef list() As LinkedList, ByVal input As String)
-        list(nextFree).entry = input
+    Sub insert(ByRef list() As Node, ByVal input As String)
+        list(nextFree).data = input
         If nextFree = 1 Then
             list(nextFree).pointer = 0
-            start = 1
+            head = 1
         Else
-            If input < list(start).entry Then
-                list(nextFree).pointer = start
-                start = nextFree
+            If input < list(head).data Then
+                list(nextFree).pointer = head
+                head = nextFree
             Else
-                Dim index As Integer = start
-                Do While input > list(list(index).pointer).entry And list(index).pointer <> 0
+                Dim index As Integer = head
+                Do While input > list(list(index).pointer).data And list(index).pointer <> 0
                     index = list(index).pointer
                 Loop
                 list(nextFree).pointer = list(index).pointer
@@ -41,11 +41,13 @@
         nextFree += 1
     End Sub
 
-    Sub printList(ByVal list() As LinkedList)
-        Dim prev As Integer = start
+
+
+    Sub printList(ByVal list() As Node)
+        Dim prev As Integer = head
         Dim arr(nextFree - 1) As String
         For i = 1 To arr.Length - 1
-            arr(i) = list(prev).entry
+            arr(i) = list(prev).data
             prev = list(prev).pointer
         Next
         For i = 1 To arr.Length - 1
